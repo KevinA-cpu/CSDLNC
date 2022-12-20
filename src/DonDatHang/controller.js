@@ -1,21 +1,11 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-
-const checkMaDHExists = async (MaDH) => {
-  try {
-    const pool = await sql.connect(config);
-    const results = await pool
-      .request()
-      .input("1", sql.VarChar(8), MaDH)
-      .query(queries.getDonDatHangByMaDH);
-
-    if (!results.recordset.length) return false;
-    return true;
-  } catch (error) {
-    throw error;
-  }
-};
+import {
+  checkMaDHExists,
+  checkMaKHExists,
+  checkMaDTExists,
+} from "../CheckExists.js";
 
 const getDonDatHang = async (req, res) => {
   try {
@@ -55,10 +45,26 @@ const insertDonDatHang = async (req, res) => {
       MaDT,
     } = JSON.parse(req.body);
 
-    if (await checkMaDHExists(res, MaDH)) {
+    if (await checkMaDHExists(MaDH)) {
       res.status(409).json({
         result: "that bai",
         message: `da ton tai MaDH ${MaDH}`,
+      });
+      return;
+    }
+
+    if (!(await checkMaDTExists(MaDT))) {
+      res.status(404).json({
+        result: "that bai",
+        message: `khong ton tai MaDT  ${MaDT} vi pham khoa ngoai`,
+      });
+      return;
+    }
+
+    if (!(await checkMaKHExists(MaKH))) {
+      res.status(404).json({
+        result: "that bai",
+        message: `khong ton tai MaKH  ${MaKH} vi pham khoa ngoai`,
       });
       return;
     }
@@ -106,7 +112,7 @@ const deleteDonDatHang = async (req, res) => {
       .query(queries.deleteDonDatHang);
     res.status(200).json({
       result: "thanh cong",
-      message: `da xoa don hang voi MADH ${MaDH}`,
+      message: `da xoa don hang voi MaDH ${MaDH}`,
     });
   } catch (error) {
     throw error;
