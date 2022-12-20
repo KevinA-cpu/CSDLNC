@@ -5,7 +5,7 @@ const config = {
     options: {
       port: 1433,
       encrypt: false,
-      database: "GiaoDoAnABC_CSDLNC",
+      database: "GiaoDoAnABC",
     },
   };
   

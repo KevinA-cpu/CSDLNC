@@ -6,22 +6,10 @@ import sql from "mssql"
 const checkDoiTacExist = async (MaDT) => {
     try {
         let pool = await sql.connect(config);
-        // const {MaDT} = req.body;
-        // console.log("req.body: ",req.body.MaDT)
-        console.log(MaDT)
-        await pool.request()
-        .input('1',sql.VarChar,MaDT)
-        .query(queries.getDoiTacByID).then((result) => {
-            console.log(result)
-            if(!result)        // DoiTac khong ton tai
-            {
-                return false;
-            }
-            else                                // DoiTac ton tai
-            {
-                return true;
-            }
-        })
+        const result = await pool.request().input('1',sql.VarChar,MaDT).query(queries.getDoiTacByID)
+        if(!result.recordset.length)
+            return false;
+        return true;
     } catch (error) {
         throw error;
     }
@@ -40,22 +28,20 @@ const getDoiTac = async (req,res) => {
 
 const getDoiTacByID = async (req,res) => {
     try {
+        const {MaDT} = JSON.parse(req.body);
+        if(!await checkDoiTacExist(MaDT))
+        {
+            res.status(404).json({
+                result:"Failed",
+                reason: `DoiTac not found with MaDT: ${MaDT}`
+            });
+            return;
+        }
         let pool = await sql.connect(config);
-        const {MaDT} = req.body;
-        console.log("req.body: ",req.body.MaDT)
         await pool.request()
-        .input('1',sql.VarChar,req.body.MaDT)
+        .input('1',sql.VarChar,MaDT)
         .query(queries.getDoiTacByID).then((result) => {
-            if(result.rowsAffected == 0)
-            {
-                res.status(404).json({
-                    result:"Failed",
-                    reason: "DoiTac not found"})
-            }
-            else
-            {
-                res.json(result.recordsets);
-            }
+            res.json(result.recordsets);
         })
     } catch (error) {
         throw error;
@@ -64,40 +50,50 @@ const getDoiTacByID = async (req,res) => {
 
 const insertDoiTac = async (req,res) => {
     try {
+        const { MaDT,TenQuan,DiaChiKinhDoanh,LoaiThucPham,NguoiDaiDien,ThanhPho,Quan_Huyen,SoLuongChiNhanh
+        ,SoLuongDonHangMoiNgay,Email,TaiKhoanNganHang} = JSON.parse(req.body);
+        if(await checkDoiTacExist(MaDT))    // doi tac da ton tai
+        {
+            res.status(409).json({
+                result: "that bai",
+                message: `da ton tai MaDT ${MaDT}`,
+            });
+            return;
+        }
         let pool = await sql.connect(config);
         await pool.request()
-        .input('1',sql.VarChar,req.body.MaDT)
-        .input('2',sql.NVarChar,req.body.TenQuan)
-        .input('3',sql.NVarChar,req.body.DiaChiKinhDoanh)
-        .input('4',sql.NVarChar,req.body.LoaiThucPham)
-        .input('5',sql.NVarChar,req.body.NguoiDaiDien)
-        .input('6',sql.NVarChar,req.body.ThanhPho)
-        .input('7',sql.NVarChar,req.body.Quan_Huyen)
-        .input('8',sql.Int,req.body.SoLuongChiNhanh)
-        .input('9',sql.Int,req.body.SoLuongDonHangMoiNgay)
-        .input('10',sql.VarChar,req.body.Email)
-        .input('11',sql.VarChar,req.body.TaiKhoanNganHang)
+        .input('1',sql.VarChar,MaDT)
+        .input('2',sql.NVarChar,TenQuan)
+        .input('3',sql.NVarChar,DiaChiKinhDoanh)
+        .input('4',sql.NVarChar,LoaiThucPham)
+        .input('5',sql.NVarChar,NguoiDaiDien)
+        .input('6',sql.NVarChar,ThanhPho)
+        .input('7',sql.NVarChar,Quan_Huyen)
+        .input('8',sql.Int,SoLuongChiNhanh)
+        .input('9',sql.Int,SoLuongDonHangMoiNgay)
+        .input('10',sql.VarChar,Email)
+        .input('11',sql.VarChar,TaiKhoanNganHang)
         .query(queries.insertDoiTac,function(err,data){
             if(!err)
             {
                 res.send({
                 result:"successfully",
-                MaDT:req.body.MaDT,
-                TenQuan:req.body.TenQuan,
-                DiaChiKinhDoanh:req.body.DiaChiKinhDoanh,
-                LoaiThucPham:req.body.LoaiThucPham,
-                NguoiDaiDien:req.body.NguoiDaiDien,
-                ThanhPho:req.body.ThanhPho,
-                Quan_Huyen:req.body.Quan_Huyen,
-                SoLuongChiNhanh:req.body.SoLuongChiNhanh,
-                SoLuongDonHangMoiNgay:req.body.SoLuongDonHangMoiNgay,
-                Email:req.body.Email,
-                TaiKhoanNganHang:req.body.TaiKhoanNganHang,
+                MaDT:MaDT,
+                TenQuan:TenQuan,
+                DiaChiKinhDoanh:DiaChiKinhDoanh,
+                LoaiThucPham:LoaiThucPham,
+                NguoiDaiDien:NguoiDaiDien,
+                ThanhPho:ThanhPho,
+                Quan_Huyen:Quan_Huyen,
+                SoLuongChiNhanh:SoLuongChiNhanh,
+                SoLuongDonHangMoiNgay:SoLuongDonHangMoiNgay,
+                Email:Email,
+                TaiKhoanNganHang:TaiKhoanNganHang,
             });
             }
             else
             {
-                res.send({result:"failed",reason:"DoiTac has already exists"});
+                res.send({result:"failed"});
             }
             
         });
@@ -108,8 +104,17 @@ const insertDoiTac = async (req,res) => {
 
 const updateDoiTac = async (req,res) => {
     try {
+        const {TenQuan,MaDT} = JSON.parse(req.body);
+        if(await checkDoiTacExist(MaDT))
+        {
+            res.status(404).json({
+                result: "that bai",
+                message: `khong ton tai MaDT ${MaDT}`,
+            });
+            return;
+        }
         let pool = await sql.connect(config);
-        await pool.request().input('1',sql.NVarChar,req.body.TenQuan).input('2',sql.VarChar,req.body.MaDT)
+        await pool.request().input('1',sql.NVarChar,TenQuan).input('2',sql.VarChar,MaDT)
         .query(queries.updateDoiTac,function(err,data){
             if(!err)
             {
@@ -133,8 +138,17 @@ const updateDoiTac = async (req,res) => {
 
 const deleteDoiTac = async (req,res) => {
     try {
+        const {MaDT} = JSON.parse(req.body);
+        if(await checkDoiTacExist(MaDT))
+        {
+            res.status(404).json({
+                result: "that bai",
+                message: `khong ton tai MaDT ${MaDT}`,
+            });
+            return;
+        }
         let pool = await sql.connect(config);
-        await pool.request().input('1',sql.VarChar,req.body.MaDT)
+        await pool.request().input('1',sql.VarChar,MaDT)
         .query(queries.deleteDoiTac,function(err,data){
             if(!err)
             {
