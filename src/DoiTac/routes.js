@@ -1,16 +1,23 @@
 import { Router } from "express";
-import controller from "./controller.js";
+import controllerDoiTac from "./controller.js";
+import controllerThucDon from "../ThucDon/controller.js";
 
 const router = Router();
 
-router.get("/",controller.getDoiTac);
+router.get("/",controllerDoiTac.getDoiTac);
 
-router.get("/MaDT",controller.getDoiTacByID);
+router.get("/MaDT",controllerDoiTac.getDoiTacByID);
 
-router.post("/",controller.insertDoiTac);
+router.post("/",controllerDoiTac.insertDoiTac);
 
-router.put("/",controller.updateDoiTac);
+router.put("/",controllerDoiTac.updateDoiTac);
 
-router.delete("/",controller.deleteDoiTac);
+router.delete("/",controllerDoiTac.deleteDoiTac);
+
+router.post("/Add_ThucDon",controllerThucDon.insertThucDon);
+
+// router.put("/Update_ThucDon",controllerThucDon.updateThucDon);
+
+router.delete("/Del_ThucDon",controllerThucDon.deleteThucDon);
 
 export default router;

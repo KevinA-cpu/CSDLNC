@@ -2,18 +2,8 @@ import e, { query } from "express";
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql"
-
-const checkDoiTacExist = async (MaDT) => {
-    try {
-        let pool = await sql.connect(config);
-        const result = await pool.request().input('1',sql.VarChar,MaDT).query(queries.getDoiTacByID)
-        if(!result.recordset.length)
-            return false;
-        return true;
-    } catch (error) {
-        throw error;
-    }
-}
+import CheckExists from "../CheckExists.js";
+import controllerThucDon from "../ThucDon/controller.js";
 
 const getDoiTac = async (req,res) => {
     try {
@@ -29,7 +19,7 @@ const getDoiTac = async (req,res) => {
 const getDoiTacByID = async (req,res) => {
     try {
         const {MaDT} = JSON.parse(req.body);
-        if(!await checkDoiTacExist(MaDT))
+        if(!await CheckExists.checkDoiTacExist(MaDT))
         {
             res.status(404).json({
                 result:"Failed",
@@ -52,7 +42,7 @@ const insertDoiTac = async (req,res) => {
     try {
         const { MaDT,TenQuan,DiaChiKinhDoanh,LoaiThucPham,NguoiDaiDien,ThanhPho,Quan_Huyen,SoLuongChiNhanh
         ,SoLuongDonHangMoiNgay,Email,TaiKhoanNganHang} = JSON.parse(req.body);
-        if(await checkDoiTacExist(MaDT))    // doi tac da ton tai
+        if(await CheckExists.checkDoiTacExist(MaDT))    // doi tac da ton tai
         {
             res.status(409).json({
                 result: "that bai",
@@ -105,7 +95,7 @@ const insertDoiTac = async (req,res) => {
 const updateDoiTac = async (req,res) => {
     try {
         const {TenQuan,MaDT} = JSON.parse(req.body);
-        if(await checkDoiTacExist(MaDT))
+        if(await CheckExists.checkDoiTacExist(MaDT))
         {
             res.status(404).json({
                 result: "that bai",
@@ -139,7 +129,7 @@ const updateDoiTac = async (req,res) => {
 const deleteDoiTac = async (req,res) => {
     try {
         const {MaDT} = JSON.parse(req.body);
-        if(await checkDoiTacExist(MaDT))
+        if(await CheckExists.checkDoiTacExist(MaDT))
         {
             res.status(404).json({
                 result: "that bai",

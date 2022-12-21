@@ -3,19 +3,6 @@ import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql"
 
-const HopDongExist = async (MaHD) => {
-    try {
-        let pool = await sql.connect(config);
-        // console.log("MaHD: ",MaHD)
-        const result = await pool.request().input('1',sql.VarChar,MaHD).query(queries.getHopDongByID)
-        console.log("DEBUG")
-        if(!result.recordset.length)
-            return false;
-        return true;
-    } catch (error) {
-        throw error;
-    }
-}
 const getHopDong = async (req,res) => {
     try {
         let pool = await sql.connect(config);
@@ -61,7 +48,7 @@ const insertHopDong = async (req,res) => {
         console.log("MaHD1: ",MaHD)
 
         //Kiem tra HopDong Exists
-        if(await HopDongExist(MaHD)){
+        if(await CheckExists.HopDongExist(MaHD)){
             res.status(409).json({
                 result:"Failed",
                 reason:`HopDong with MahD ${MaHD} is already exist`
@@ -96,7 +83,7 @@ const insertHopDong = async (req,res) => {
 const updateHopDong = async (req,res) => {
     try {
         const {STK,MaHD} = JSON.parse(req.body);
-        if(! await HopDongExist(MaHD))
+        if(! await CheckExists.HopDongExist(MaHD))
         {
             res.status(404).json({
                 result: "that bai",
@@ -122,7 +109,7 @@ const updateHopDong = async (req,res) => {
 const deleteHopDong = async (req,res) => {
     try {
         const {MaHD} = JSON.parse(req.body);
-        if(!await HopDongExist(MaHD))
+        if(!await CheckExists.HopDongExist(MaHD))
         {
             res.status(404).json({
                 result: "that bai",
