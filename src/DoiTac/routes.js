@@ -3,14 +3,16 @@ import controller from "./controller.js";
 
 const router = Router();
 
-router.get("/",controller.getDoiTac);
+router.get("/", controller.getDoiTac);
 
-router.get("/MaDT",controller.getDoiTacByID);
+router.get("/MaDT", controller.getDoiTacWithMaDT);
 
-router.post("/",controller.insertDoiTac);
+router.get("/getAvailableDoiTac", controller.getAvailableDoiTac);
 
-router.put("/",controller.updateDoiTac);
+router.post("/", controller.insertDoiTac);
 
-router.delete("/",controller.deleteDoiTac);
+router.put("/", controller.updateDoiTac);
+
+router.delete("/", controller.deleteDoiTac);
 
 export default router;

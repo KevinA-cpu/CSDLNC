@@ -3,6 +3,30 @@ import queries from "./queries.js";
 import sql from "mssql";
 import { checkMaDHExists, checkMaTXExists } from "../CheckExists.js";
 
+const getTaiXe = async (req, res) => {
+  try {
+    const pool = await sql.connect(config);
+    const results = await pool.request().query(queries.getTaiXe);
+    res.status(200).json(results.recordset);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getTaiXeWithMaTX = async (req, res) => {
+  try {
+    const MaTX = req.query.MaTX;
+    const pool = await sql.connect(config);
+    const results = await pool
+      .request()
+      .input("1", sql.VarChar(8), MaTX)
+      .query(queries.getTaiXeWithMaTX);
+    res.status(200).json(results.recordset);
+  } catch (error) {
+    throw error;
+  }
+};
+
 const chooseDonDatHang = async (req, res) => {
   try {
     const { MaDH, MaTX } = JSON.parse(req.body);
@@ -56,6 +80,8 @@ const undoDonDatHang = async (req, res) => {
 };
 
 export default {
+  getTaiXe,
+  getTaiXeWithMaTX,
   chooseDonDatHang,
   undoDonDatHang,
 };
