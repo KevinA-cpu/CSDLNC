@@ -56,7 +56,7 @@ const insertDonDatHang = async (req, res) => {
     if (!(await checkMaDTExists(MaDT))) {
       res.status(404).json({
         result: "that bai",
-        message: `khong ton tai MaDT  ${MaDT} vi pham khoa ngoai`,
+        message: `khong ton tai MaDT ${MaDT} vi pham khoa ngoai`,
       });
       return;
     }
@@ -64,7 +64,7 @@ const insertDonDatHang = async (req, res) => {
     if (!(await checkMaKHExists(MaKH))) {
       res.status(404).json({
         result: "that bai",
-        message: `khong ton tai MaKH  ${MaKH} vi pham khoa ngoai`,
+        message: `khong ton tai MaKH ${MaKH} vi pham khoa ngoai`,
       });
       return;
     }

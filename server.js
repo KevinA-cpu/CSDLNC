@@ -3,6 +3,7 @@ import cors from "cors";
 
 import DonDatHangRouter from "./src/DonDatHang/routes.js";
 import DonHang_MonAnRouter from "./src/DonHang_MonAn/routes.js";
+import TaiXeRouter from "./src/TaiXe/routes.js";
 
 const App = Express();
 
@@ -18,5 +19,7 @@ App.get("/", (req, res) => {
 App.use("/api/v1/DonDatHang", DonDatHangRouter);
 
 App.use("/api/v1/DonHang_MonAn", DonHang_MonAnRouter);
+
+App.use("/api/v1/TaiXe", TaiXeRouter);
 
 App.listen(3000, () => console.log(`App is listening on 3000`));

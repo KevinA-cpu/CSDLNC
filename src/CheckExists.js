@@ -1,7 +1,6 @@
 import config from "../db.js";
 import sql from "mssql";
 import queriesDonDatHang from "./DonDatHang/queries.js";
-import queriesDonHang_MonAn from "./DonHang_MonAn/queries.js";
 
 const checkMaDHExists = async (MaDH) => {
   try {
@@ -10,7 +9,6 @@ const checkMaDHExists = async (MaDH) => {
       .request()
       .input("1", sql.VarChar(8), MaDH)
       .query(queriesDonDatHang.getDonDatHangByMaDH);
-
     if (!results.recordset.length) return false;
     return true;
   } catch (error) {
@@ -63,4 +61,24 @@ const checkTenMonExists = async (TenMon) => {
   }
 };
 
-export { checkMaDHExists, checkMaKHExists, checkMaDTExists, checkTenMonExists };
+const checkMaTXExists = async (MaTX) => {
+  try {
+    const pool = await sql.connect(config);
+    const results = await pool
+      .request()
+      .input("1", sql.VarChar(8), MaTX)
+      .query("SELECT * FROM TaiXe WHERE MaTX = @1");
+    if (!results.recordset.length) return false;
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export {
+  checkMaDHExists,
+  checkMaKHExists,
+  checkMaDTExists,
+  checkTenMonExists,
+  checkMaTXExists,
+};

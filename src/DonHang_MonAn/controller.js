@@ -48,14 +48,14 @@ const insertDonHang_MonAn = async (req, res) => {
     if (!(await checkMaDHExists(MaDH))) {
       res.status(404).json({
         result: "that bai",
-        message: `khong ton tai MaDH  ${MaDH} vi pham khoa ngoai`,
+        message: `khong ton tai MaDH ${MaDH} vi pham khoa ngoai`,
       });
       return;
     }
     if (!(await checkTenMonExists(TenMon))) {
       res.status(404).json({
         result: "that bai",
-        message: `khong ton tai TenMon  ${TenMon} vi pham khoa ngoai`,
+        message: `khong ton tai TenMon ${TenMon} vi pham khoa ngoai`,
       });
       return;
     }
