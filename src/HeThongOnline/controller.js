@@ -1,7 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import { checkHeThongOnlineExists } from "../CheckExists.js";
+import {checkHeThongOnlineExists} from "../CheckExists.js";
 
 const getHeThongOnline = async (req, res) => {
   try {

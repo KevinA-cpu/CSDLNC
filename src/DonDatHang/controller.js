@@ -1,11 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import {
-  checkMaDHExists,
-  checkMaKHExists,
-  checkMaDTExists,
-} from "../CheckExists.js";
+import {checkMaDHExists,checkMaDTExists,checkMaKHExists} from "../CheckExists.js";
 
 const getDonDatHang = async (req, res) => {
   try {
