@@ -2,7 +2,7 @@ import e, { query } from "express";
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql"
-import CheckExists from "../CheckExists.js";
+import {checkMaHD,checkMST,HopDongExist,checkMaDTExists} from "../CheckExists.js";
 
 const getChiTietHopDong = async (req,res) => {
     try {
@@ -17,7 +17,7 @@ const getChiTietHopDong = async (req,res) => {
 const getChiTietHopDongByMaHD = async(req,res) => {
     try {
         const {MaHD} = JSON.parse(req.body);
-        if(!await CheckExists.checkMaHD(MaHD))
+        if(!await checkMaHD(MaHD))
         {
             res.status(404).json({
                 result:"Failed",
@@ -39,7 +39,7 @@ const getChiTietHopDongByMaHD = async(req,res) => {
 const getChiTietHopDongByMaSoThue = async(req,res) => {
     try {
         const {MaSoThue} = JSON.parse(req.body);
-        if(!await CheckExists.checkMST(MaSoThue))
+        if(!await checkMST(MaSoThue))
         {
             res.status(404).json({
                 result:"Failed",
@@ -61,7 +61,7 @@ const getChiTietHopDongByMaSoThue = async(req,res) => {
 const insertChiTietHopDong = async(req,res) => {
     try {
         const {MaSoThue,MaDT,SoNamHoatDong,TrangThaiHoatDong,NgayKyHopDong,PhiKichHoat,MaHD} = JSON.parse(req.body);
-        if(await CheckExists.checkMST(MaSoThue))        // check MaSoThue nay co ton tai hay chua
+        if(await checkMST(MaSoThue))        // check MaSoThue nay co ton tai hay chua
         {
             res.status(409).json({
                 result:"Failed",
@@ -69,7 +69,7 @@ const insertChiTietHopDong = async(req,res) => {
             });
             return;
         }
-        if(await CheckExists.checkMaHD(MaHD))           // check MaHD nay co ton tai trong table ChiTietHopDong khong
+        if(await checkMaHD(MaHD))           // check MaHD nay co ton tai trong table ChiTietHopDong khong
         {
             res.status(409).json({
                 result:"Failed",
@@ -77,14 +77,14 @@ const insertChiTietHopDong = async(req,res) => {
             });
             return;
         }
-        if(!await CheckExists.HopDongExist(MaHD)){
+        if(!await HopDongExist(MaHD)){
             res.status(404).json({
                 result:"Failed",
                 reason: `MaHD is not exist MaHD: ${MaHD} in DATABASE`
             });
             return;
         }
-        if(!await CheckExists.checkDoiTacExist(MaDT)){
+        if(!await checkMaDTExists(MaDT)){
             res.status(404).json({
                 result:"Failed",
                 reason: `DoiTac is not exist MaDT: ${MaDT} in DATABASE`

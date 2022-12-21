@@ -1,7 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import checkExists from "../CheckExists.js";
+import {checkMaDHExists,checkTenMonExists} from "../CheckExists.js";
 
 const getDonHang_MonAn = async (req, res) => {
   try {
@@ -45,7 +45,7 @@ const insertDonHang_MonAn = async (req, res) => {
   try {
     const { MaDH, TenMon, DonGia, SoLuong } = JSON.parse(req.body);
 
-    if (!(await checkExists.checkMaDHExists(MaDH))) {
+    if (!(await checkMaDHExists(MaDH))) {
       res.status(404).json({
         result: "that bai",
         message: `khong ton tai MaDH ${MaDH} vi pham khoa ngoai`,

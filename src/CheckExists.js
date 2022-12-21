@@ -152,7 +152,7 @@ const checkMST = async(MaSoThue) =>{
 }
 
 
-export default{
+export {
   checkMaDHExists,
   checkMaKHExists,
   checkMaDTExists,

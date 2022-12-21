@@ -1,7 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import checkExists from "../CheckExists.js";
+import {checkHeThongOnlineExists} from "../CheckExists.js";
 
 const getHeThongOnline = async (req, res) => {
   try {
@@ -34,7 +34,7 @@ const updateHeThongOnline = async (req, res) => {
     const data = JSON.parse(req.body);
     const { MaDT, ThanhPho, Quan_Huyen } = data;
 
-    if (!(await checkExists.checkHeThongOnlineExists(MaDT, ThanhPho, Quan_Huyen))) {
+    if (!(await checkHeThongOnlineExists(MaDT, ThanhPho, Quan_Huyen))) {
       res.status(404).json({
         result: "that bai",
         reason: `khong tim thay he thong online voi MaDT ${MaDT}, ThanhPho ${ThanhPho}, Quan_Huyen ${Quan_Huyen}`,

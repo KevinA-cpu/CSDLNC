@@ -1,7 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import checkExists  from "../CheckExists.js";
+import {checkMaDTExists}  from "../CheckExists.js";
 
 const getDoiTac = async (req, res) => {
   try {
@@ -19,7 +19,7 @@ const getDoiTac = async (req, res) => {
 const getDoiTacByID = async (req, res) => {
   try {
     const {MaDT} = JSON.parse(req.body);
-    if(!await checkExists.checkMaDTExists(MaDT))
+    if(!await checkMaDTExists(MaDT))
     {
         res.status(404).json({
             result:"Failed",
@@ -67,7 +67,7 @@ const insertDoiTac = async (req, res) => {
       Email,
       TaiKhoanNganHang,
     } = JSON.parse(req.body);
-    if (await checkExists.checkMaDTExists(MaDT)) {
+    if (await checkMaDTExists(MaDT)) {
       // doi tac da ton tai
       res.status(409).json({
         result: "that bai",
@@ -117,7 +117,7 @@ const insertDoiTac = async (req, res) => {
 const updateDoiTac = async (req, res) => {
   try {
     const { TenQuan, MaDT } = JSON.parse(req.body);
-    if (! await checkExists.checkMaDTExists(MaDT)) {
+    if (! await checkMaDTExists(MaDT)) {
       res.status(404).json({
         result: "that bai",
         message: `khong ton tai MaDT ${MaDT}`,
@@ -150,7 +150,7 @@ const updateDoiTac = async (req, res) => {
 const deleteDoiTac = async (req, res) => {
   try {
     const { MaDT } = JSON.parse(req.body);
-    if (! await checkExists.checkMaDTExists(MaDT)) {
+    if (! await checkMaDTExists(MaDT)) {
       res.status(404).json({
         result: "that bai",
         message: `khong ton tai MaDT ${MaDT}`,

@@ -2,7 +2,7 @@ import e, { json, query } from "express";
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql"
-import CheckExists from "../CheckExists.js";
+import {checkMaDTExists} from "../CheckExists.js";
 
 const getPhiHoaHong = async(req,res) => {
     try {
@@ -17,7 +17,7 @@ const getPhiHoaHong = async(req,res) => {
 const getPhiHoaHongByID = async(req,res) => {
     try {
         const {MaDT} = JSON.parse(req.body);
-        if(! await CheckExists.checkMaDTExists(MaDT))
+        if(! await checkMaDTExists(MaDT))
         {
             res.status(404).json({
                 result:"failed",
@@ -37,7 +37,7 @@ const getPhiHoaHongByID = async(req,res) => {
 const updatePhiHoaHong = async(req,res) => {
     try {
         const {DoanhSo,NgayThang,MaDT} = JSON.parse(req.body);
-        if(! await CheckExists.checkDoiTacExist(MaDT))
+        if(! await checkMaDTExists(MaDT))
         {
             res.status(404).json({
                 result:"failed",

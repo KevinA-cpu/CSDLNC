@@ -1,7 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql"
-import CheckExists  from "../CheckExists.js";
+import {checkMaDTExists,checkTenMonExists,check_TenMon_ThucDon}  from "../checkExists.js";
 
 const getThucDon = async(req,res) => {
     try {
@@ -16,7 +16,7 @@ const getThucDon = async(req,res) => {
 const getThucDonByMaDT = async(req,res) => {
     try {
         const {MaDT} = JSON.parse(req.body);
-        if(! await CheckExists.checkMaDTExists(MaDT)){
+        if(! await checkMaDTExists(MaDT)){
             res.status(404).json({
                 result:"Failed",
                 reason: `DoiTac not found with MaDT: ${MaDT}`
@@ -35,7 +35,7 @@ const insertThucDon = async (req,res) =>
 {
     try {
         const {MaDT,TenMon} = JSON.parse(req.body);
-        if(! await CheckExists.checkMaDTExists(MaDT))  // doi tac khong ton tai trong database
+        if(! await checkMaDTExists(MaDT))  // doi tac khong ton tai trong database
         {
             res.status(404).json({
                 result:"insert Failed",
@@ -43,7 +43,7 @@ const insertThucDon = async (req,res) =>
             });
             return;
         }
-        if(! await CheckExists.checkTenMonExists(TenMon))
+        if(! await checkTenMonExists(TenMon))
         {
             res.status(404).json({
                 result:"insert Failed",
@@ -51,7 +51,7 @@ const insertThucDon = async (req,res) =>
             });
             return;
         }
-        if(await CheckExists.check_TenMon_ThucDon(TenMon,MaDT))
+        if(await check_TenMon_ThucDon(TenMon,MaDT))
         {
             res.status(409).json({
                 result:"insert Failed",
@@ -80,7 +80,7 @@ const updateThucDon = async(req,res) => {
     try {
         const {TenMon_Old,TenMon_New,MaDT} = JSON.parse(req.body);
         console.log(TenMon_Old,TenMon_New,MaDT)
-        if(! await CheckExists.checkDoiTacExist(MaDT))
+        if(! await checkMaDTExists(MaDT))
         {
             res.status(404).json({
                 result:"update Failed",
@@ -88,7 +88,7 @@ const updateThucDon = async(req,res) => {
             });
             return;
         }
-        if(! await CheckExists.checkTenMon(TenMon_Old))
+        if(! await checkTenMonExists(TenMon_Old))
         {
             res.status(404).json({
                 result:"update Failed",
@@ -96,7 +96,7 @@ const updateThucDon = async(req,res) => {
             });
             return;
         }
-        if(! await CheckExists.check_TenMon_ThucDon(TenMon_Old,MaDT))
+        if(! await check_TenMon_ThucDon(TenMon_Old,MaDT))
         {
             res.status(404).json({
                 result:"update Failed",
@@ -126,7 +126,7 @@ const updateThucDon = async(req,res) => {
 const deleteThucDon = async(req,res) =>{
     try {
         const {MaDT,TenMon} = JSON.parse(req.body);
-        if(! await CheckExists.checkDoiTacExist(MaDT)) 
+        if(! await checkMaDTExists(MaDT)) 
         {
             res.status(404).json({
                 result:"Failed",
@@ -134,7 +134,7 @@ const deleteThucDon = async(req,res) =>{
             });
             return;
         }
-        if(! await CheckExists.checkTenMon(TenMon))
+        if(! await checkTenMonExists(TenMon))
         {
             res.status(404).json({
                 result:"Failed",
@@ -142,7 +142,7 @@ const deleteThucDon = async(req,res) =>{
             });
             return;
         }
-        if(! await CheckExists.check_TenMon_ThucDon(TenMon,MaDT))
+        if(! await check_TenMon_ThucDon(TenMon,MaDT))
         {
             res.status(404).json({
                 result:"Failed",
