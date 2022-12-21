@@ -1,13 +1,12 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import { checkMaDTExists } from "../CheckExists.js";
+import checkExists  from "../CheckExists.js";
 
 const getDoiTac = async (req, res) => {
   try {
     let pool = await sql.connect(config);
-    await pool
-      .request()
+    await pool.request()
       .query(queries.getDoiTac)
       .then((result) => {
         res.json(result.recordsets);
@@ -17,20 +16,26 @@ const getDoiTac = async (req, res) => {
   }
 };
 
-const getDoiTacWithMaDT = async (req, res) => {
+const getDoiTacByID = async (req, res) => {
   try {
-    const MaDT = req.query.MaDT;
+    const {MaDT} = JSON.parse(req.body);
+    if(!await checkExists.checkMaDTExists(MaDT))
+    {
+        res.status(404).json({
+            result:"Failed",
+            reason: `DoiTac not found with MaDT: ${MaDT}`
+        });
+        return;
+    }
     let pool = await sql.connect(config);
-    await pool
-      .request()
-      .input("1", sql.VarChar, MaDT)
-      .query(queries.getDoiTacWithMaDT)
-      .then((result) => {
+    await pool.request()
+    .input('1',sql.VarChar,MaDT)
+    .query(queries.getDoiTacWithMaDT).then((result) => {
         res.json(result.recordsets);
-      });
+    })
   } catch (error) {
-    throw error;
-  }
+      throw error;
+}
 };
 
 const getAvailableDoiTac = async (req, res) => {
@@ -62,7 +67,7 @@ const insertDoiTac = async (req, res) => {
       Email,
       TaiKhoanNganHang,
     } = JSON.parse(req.body);
-    if (await checkMaDTExists(MaDT)) {
+    if (await checkExists.checkMaDTExists(MaDT)) {
       // doi tac da ton tai
       res.status(409).json({
         result: "that bai",
@@ -112,7 +117,7 @@ const insertDoiTac = async (req, res) => {
 const updateDoiTac = async (req, res) => {
   try {
     const { TenQuan, MaDT } = JSON.parse(req.body);
-    if (await checkMaDTExists(MaDT)) {
+    if (! await checkExists.checkMaDTExists(MaDT)) {
       res.status(404).json({
         result: "that bai",
         message: `khong ton tai MaDT ${MaDT}`,
@@ -123,7 +128,7 @@ const updateDoiTac = async (req, res) => {
     await pool
       .request()
       .input("1", sql.NVarChar, TenQuan)
-      .input("2", sql.VarChar, MaDT)
+      .input("2", sql.VarChar(8), MaDT)
       .query(queries.updateDoiTac, function (err, data) {
         if (!err) {
           res.status(200).json({
@@ -133,7 +138,7 @@ const updateDoiTac = async (req, res) => {
         } else {
           res.status(404).json({
             result: "failed",
-            reason: "Doi tac is not exists",
+            reason: "Something maybe conflict",
           });
         }
       });
@@ -145,7 +150,7 @@ const updateDoiTac = async (req, res) => {
 const deleteDoiTac = async (req, res) => {
   try {
     const { MaDT } = JSON.parse(req.body);
-    if (await checkMaDTExists(MaDT)) {
+    if (! await checkExists.checkMaDTExists(MaDT)) {
       res.status(404).json({
         result: "that bai",
         message: `khong ton tai MaDT ${MaDT}`,
@@ -155,7 +160,7 @@ const deleteDoiTac = async (req, res) => {
     let pool = await sql.connect(config);
     await pool
       .request()
-      .input("1", sql.VarChar, MaDT)
+      .input("1", sql.VarChar(8), MaDT)
       .query(queries.deleteDoiTac, function (err, data) {
         if (!err) {
           res.status(200).json({
@@ -165,7 +170,7 @@ const deleteDoiTac = async (req, res) => {
         } else {
           res.status(404).json({
             result: "failed",
-            reason: "Doi tac is not exists",
+            reason: "Some thing maybe conflict",
           });
         }
       });
@@ -176,7 +181,7 @@ const deleteDoiTac = async (req, res) => {
 
 export default {
   getDoiTac,
-  getDoiTacWithMaDT,
+  getDoiTacByID,
   getAvailableDoiTac,
   insertDoiTac,
   updateDoiTac,

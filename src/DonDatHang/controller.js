@@ -1,11 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import {
-  checkMaDHExists,
-  checkMaKHExists,
-  checkMaDTExists,
-} from "../CheckExists.js";
+import checkExists from "../CheckExists.js";
 
 const getDonDatHang = async (req, res) => {
   try {
@@ -45,7 +41,7 @@ const insertDonDatHang = async (req, res) => {
       MaDT,
     } = JSON.parse(req.body);
 
-    if (await checkMaDHExists(MaDH)) {
+    if (await checkExists.checkMaDHExists(MaDH)) {
       res.status(409).json({
         result: "that bai",
         message: `da ton tai MaDH ${MaDH}`,
@@ -53,7 +49,7 @@ const insertDonDatHang = async (req, res) => {
       return;
     }
 
-    if (!(await checkMaDTExists(MaDT))) {
+    if (!(await checkExists.checkMaDTExists(MaDT))) {
       res.status(404).json({
         result: "that bai",
         message: `khong ton tai MaDT ${MaDT} vi pham khoa ngoai`,
@@ -61,7 +57,7 @@ const insertDonDatHang = async (req, res) => {
       return;
     }
 
-    if (!(await checkMaKHExists(MaKH))) {
+    if (!(await checkExists.checkMaKHExists(MaKH))) {
       res.status(404).json({
         result: "that bai",
         message: `khong ton tai MaKH ${MaKH} vi pham khoa ngoai`,

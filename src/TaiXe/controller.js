@@ -1,7 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import { checkMaDHExists, checkMaTXExists } from "../CheckExists.js";
+import checkExists from "../CheckExists.js";
 
 const getTaiXe = async (req, res) => {
   try {
@@ -31,7 +31,7 @@ const chooseDonDatHang = async (req, res) => {
   try {
     const { MaDH, MaTX } = JSON.parse(req.body);
 
-    if (!(await checkMaDHExists(MaDH))) {
+    if (!(await checkExists.checkMaDHExists(MaDH))) {
       res.status(404).json({
         result: "that bai",
         message: `khong ton tai MaDH ${MaDH} trong DonDatHang`,
@@ -39,7 +39,7 @@ const chooseDonDatHang = async (req, res) => {
       return;
     }
 
-    if (!(await checkMaTXExists(MaTX))) {
+    if (!(await checkExists.checkMaTXExists(MaTX))) {
       res.status(404).json({
         result: "that bai",
         message: `khong ton tai MaTX ${MaTX} vi pham khoa ngoai`,

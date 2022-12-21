@@ -2,6 +2,7 @@ import e, { json, query } from "express";
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql"
+import checkExists from "../CheckExists.js"
 
 const HopDongExist = async (MaHD) => {
     try {
@@ -29,7 +30,7 @@ const getHopDong = async (req,res) => {
 const getHopDongByID = async (req,res) => {
     try {
         const {MaHD} = JSON.parse(req.body)
-        if(! await HopDongExist(MaHD)){
+        if(! await checkExists.HopDongExist(MaHD)){
             res.status(404).json({
                 result:"Failed",
                 reason: `HopDong not found with MaDT: ${MaHD}`
