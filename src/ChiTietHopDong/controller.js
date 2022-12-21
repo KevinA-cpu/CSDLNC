@@ -17,7 +17,7 @@ const getChiTietHopDong = async (req,res) => {
 const getChiTietHopDongByMaHD = async(req,res) => {
     try {
         const {MaHD} = JSON.parse(req.body);
-        if(!await CheckExists.CheckcheckMaHD(MaHD))
+        if(!await CheckExists.checkMaHD(MaHD))
         {
             res.status(404).json({
                 result:"Failed",
@@ -84,7 +84,7 @@ const insertChiTietHopDong = async(req,res) => {
             });
             return;
         }
-        if(!await CheckExists.checkDoiTacExists(MaDT)){
+        if(!await CheckExists.checkDoiTacExist(MaDT)){
             res.status(404).json({
                 result:"Failed",
                 reason: `DoiTac is not exist MaDT: ${MaDT} in DATABASE`
@@ -95,10 +95,10 @@ const insertChiTietHopDong = async(req,res) => {
         await pool.request()
         .input('1',sql.VarChar,MaSoThue)
         .input('2',sql.NVarChar,MaDT)
-        .input('3',sql.NVarChar,SoNamHoatDong)
+        .input('3',sql.Int,SoNamHoatDong)
         .input('4',sql.NVarChar,TrangThaiHoatDong)
         .input('5',sql.NVarChar,NgayKyHopDong)
-        .input('6',sql.NVarChar,PhiKichHoat)
+        .input('6',sql.Money,PhiKichHoat)
         .input('7',sql.NVarChar,MaHD).query(queries.insertChiTietHopDong);
         res.status(200).json({
             result:"Successfully",

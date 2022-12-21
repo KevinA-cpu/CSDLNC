@@ -15,5 +15,5 @@ const getHeThongOnline = async(req,res) => {
 }
 
 export default {
-    getHeThongOnline
+    getHeThongOnline,
 }

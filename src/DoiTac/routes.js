@@ -8,6 +8,8 @@ router.get("/",controllerDoiTac.getDoiTac);
 
 router.get("/MaDT",controllerDoiTac.getDoiTacByID);
 
+router.get("/ThucDon",controllerThucDon.getThucDonByMaDT)
+
 router.post("/",controllerDoiTac.insertDoiTac);
 
 router.put("/",controllerDoiTac.updateDoiTac);

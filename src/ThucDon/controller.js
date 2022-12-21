@@ -20,7 +20,7 @@ const getThucDonByMaDT = async(req,res) => {
         if(! await CheckExists.checkDoiTacExist(MaDT)){
             res.status(404).json({
                 result:"Failed",
-                reason: `DoiTac not found with MaDT: ${MaHD}`
+                reason: `DoiTac not found with MaDT: ${MaDT}`
             });
             return;
         }
@@ -35,7 +35,6 @@ const getThucDonByMaDT = async(req,res) => {
 const insertThucDon = async (req,res) =>
 {
     try {
-        console.log("DEBUG");
         const {MaDT,TenMon} = JSON.parse(req.body);
         if(! await CheckExists.checkDoiTacExist(MaDT))  // doi tac khong ton tai trong database
         {
@@ -155,7 +154,7 @@ const deleteThucDon = async(req,res) =>{
         let pool = await sql.connect(config);
         await pool.request().input('1',sql.VarChar(8),MaDT)
         .input('2',sql.NVarChar(30),TenMon)
-        .query(queries.deleteThucDon);
+        .query(queries.deleteThucDon)
         res.status(200).json({
             result:"delete successfully",
             data:{

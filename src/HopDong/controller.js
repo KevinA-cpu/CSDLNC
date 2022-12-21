@@ -2,6 +2,7 @@ import e, { json, query } from "express";
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql"
+import CheckExists from "../CheckExists.js";
 
 const getHopDong = async (req,res) => {
     try {
@@ -16,7 +17,7 @@ const getHopDong = async (req,res) => {
 const getHopDongByID = async (req,res) => {
     try {
         const {MaHD} = JSON.parse(req.body)
-        if(! await HopDongExist(MaHD)){
+        if(! await CheckExists.HopDongExist(MaHD)){
             res.status(404).json({
                 result:"Failed",
                 reason: `HopDong not found with MaDT: ${MaHD}`
@@ -42,10 +43,14 @@ const insertHopDong = async (req,res) => {
             DiaChiDangKyCacChiNhanh,
             STK,
             NganHang,
-            ChiNhanhNganHang
-        } = JSON.parse(req.body);
+            ChiNhanhNganHang } = JSON.parse(req.body);
 
-        console.log("MaHD1: ",MaHD)
+        console.log("DEBUG: ",MaHD,
+            SoChiNhanhDangKy,
+            DiaChiDangKyCacChiNhanh,
+            STK,
+            NganHang,
+            ChiNhanhNganHang)
 
         //Kiem tra HopDong Exists
         if(await CheckExists.HopDongExist(MaHD)){
@@ -74,7 +79,7 @@ const insertHopDong = async (req,res) => {
                 NganHang:NganHang,
                 ChiNhanhNganHang:ChiNhanhNganHang
             },
-        })
+        });
     } catch (error) {
         throw error;
     }
@@ -118,10 +123,22 @@ const deleteHopDong = async (req,res) => {
             return;
         }
         let pool = await sql.connect(config);
-        await pool.request().input('1',sql.VarChar(8),MaHD).query(queries.deleteHopDong);
-        res.status(200).json({
-            result:"delete successfully",
-            MaHD : MaHD
+        await pool.request().input('1',sql.VarChar(8),MaHD).query(queries.deleteHopDong,function(err,data){
+            if(!err)
+            {
+                res.status(200).json({
+                    result:"delete successfully",
+                    MaHD : MaHD
+                });
+            }
+            else
+            {
+                res.status(404).json({
+                    result: "failed",
+                    reason:"Maybe conflict Foreign Key"
+                });
+                return;
+            }
         })
     } catch (error) {
         throw error;

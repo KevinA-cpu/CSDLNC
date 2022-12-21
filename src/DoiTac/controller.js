@@ -95,7 +95,7 @@ const insertDoiTac = async (req,res) => {
 const updateDoiTac = async (req,res) => {
     try {
         const {TenQuan,MaDT} = JSON.parse(req.body);
-        if(await CheckExists.checkDoiTacExist(MaDT))
+        if(! await CheckExists.checkDoiTacExist(MaDT))
         {
             res.status(404).json({
                 result: "that bai",
@@ -129,7 +129,7 @@ const updateDoiTac = async (req,res) => {
 const deleteDoiTac = async (req,res) => {
     try {
         const {MaDT} = JSON.parse(req.body);
-        if(await CheckExists.checkDoiTacExist(MaDT))
+        if(! await CheckExists.checkDoiTacExist(MaDT))
         {
             res.status(404).json({
                 result: "that bai",
