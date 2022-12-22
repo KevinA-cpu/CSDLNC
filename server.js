@@ -9,6 +9,7 @@ import TaiXeRouter from "./src/TaiXe/routes.js";
 import HeThongOnlineRouter from "./src/HeThongOnline/routes.js";
 import ThucDonRouter from "./src/ThucDon/routes.js";
 import PhiHoaHongRouter from "./src/PhiHoaHong/routes.js";
+import KhachHangRouter from "./src/KhachHang/routes.js";
 
 const App = Express();
 
@@ -39,5 +40,6 @@ App.use("/api/v1/ThucDon", ThucDonRouter);
 
 App.use("/api/v1/PhiHoaHong", PhiHoaHongRouter);
 
+App.use("/api/v1/KhachHang", KhachHangRouter);
 
 App.listen(3000, () => console.log(`App is listening on 3000`));
