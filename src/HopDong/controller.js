@@ -2,20 +2,8 @@ import e, { json, query } from "express";
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql"
+import {HopDongExist} from "../CheckExists.js"
 
-const HopDongExist = async (MaHD) => {
-    try {
-        let pool = await sql.connect(config);
-        // console.log("MaHD: ",MaHD)
-        const result = await pool.request().input('1',sql.VarChar,MaHD).query(queries.getHopDongByID)
-        console.log("DEBUG")
-        if(!result.recordset.length)
-            return false;
-        return true;
-    } catch (error) {
-        throw error;
-    }
-}
 const getHopDong = async (req,res) => {
     try {
         let pool = await sql.connect(config);

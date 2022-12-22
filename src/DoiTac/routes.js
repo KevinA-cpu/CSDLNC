@@ -1,11 +1,16 @@
 import { Router } from "express";
 import controller from "./controller.js";
+import controllerThucDon from "../ThucDon/controller.js";
 
 const router = Router();
 
 router.get("/", controller.getDoiTac);
 
-router.get("/MaDT", controller.getDoiTacWithMaDT);
+router.get("/MaDT",controller.getDoiTacByID);
+
+router.get("/ThucDon",controllerThucDon.getThucDonByMaDT)
+
+router.post("/Add_ThucDon",controllerThucDon.insertThucDon);
 
 router.get("/getAvailableDoiTac", controller.getAvailableDoiTac);
 

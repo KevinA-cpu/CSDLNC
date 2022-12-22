@@ -1,7 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import { checkMaDHExists, checkMaTXExists } from "../CheckExists.js";
+import {checkMaDHExists,checkMaTXExists} from "../CheckExists.js";
 
 const getTaiXe = async (req, res) => {
   try {
