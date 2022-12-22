@@ -11,4 +11,6 @@ router.put("/chooseDonDatHang", controller.chooseDonDatHang);
 
 router.put("/undoDonDatHang", controller.undoDonDatHang);
 
+router.post("/", controller.insertTaiXe);
+
 export default router;

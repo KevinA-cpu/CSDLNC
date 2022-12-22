@@ -1,7 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import {checkMaDHExists,checkMaTXExists} from "../CheckExists.js";
+import { checkMaDHExists, checkMaTXExists } from "../CheckExists.js";
 
 const getTaiXe = async (req, res) => {
   try {
@@ -79,9 +79,69 @@ const undoDonDatHang = async (req, res) => {
   }
 };
 
+const insertTaiXe = async (req, res) => {
+  try {
+    const {
+      MaTX,
+      HoTen,
+      CCCD,
+      SDT,
+      DiaChi,
+      BienSoXe,
+      KhuVucHoatDong,
+      Email,
+      STKNganHang,
+      PhiTheChan,
+    } = JSON.parse(req.body);
+
+    if (await checkMaTXExists(MaTX)) {
+      res.status(404).json({
+        result: "that bai",
+        message: `da ton tai MaTX ${MaTX} vi pham khoa chinh`,
+      });
+      return;
+    }
+
+    const pool = await sql.connect(config);
+    await pool
+      .request()
+      .input("1", sql.VarChar(8), MaTX)
+      .input("2", sql.NVarChar(30), HoTen)
+      .input("3", sql.Char(12), CCCD)
+      .input("4", sql.Char(10), SDT)
+      .input("5", sql.NVarChar(100), DiaChi)
+      .input("6", sql.NVarChar(30), BienSoXe)
+      .input("7", sql.NVarChar(100), KhuVucHoatDong)
+      .input("8", sql.VarChar(30), Email)
+      .input("9", sql.NVarChar(30), STKNganHang)
+      .input("10", sql.Money, PhiTheChan)
+      .query(queries.insertTaiXe);
+
+    res.status(200).json({
+      result: "thanh cong",
+      message: "them tai xe thanh cong",
+      data: {
+        MaTX: MaTX,
+        HoTen: HoTen,
+        CCCD: CCCD,
+        SDT: SDT,
+        DiaChi: DiaChi,
+        BienSoXe: BienSoXe,
+        KhuVucHoatDong: KhuVucHoatDong,
+        Email: Email,
+        STKNganHang: STKNganHang,
+        PhiTheChan: PhiTheChan,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   getTaiXe,
   getTaiXeWithMaTX,
   chooseDonDatHang,
   undoDonDatHang,
+  insertTaiXe,
 };
