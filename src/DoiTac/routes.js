@@ -6,9 +6,9 @@ const router = Router();
 
 router.get("/", controller.getDoiTac);
 
-router.get("/MaDT",controller.getDoiTacByID);
+router.post("/MaDT",controller.getDoiTacByID);
 
-router.get("/ThucDon",controllerThucDon.getThucDonByMaDT)
+router.post("/ThucDon",controller.getThucDonByMaDT)
 
 router.post("/Add_ThucDon",controllerThucDon.insertThucDon);
 

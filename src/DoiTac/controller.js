@@ -179,6 +179,24 @@ const deleteDoiTac = async (req, res) => {
   }
 };
 
+const getThucDonByMaDT = async(req,res) => {
+  try {
+      const {MaDT} = JSON.parse(req.body);
+      if(! await checkMaDTExists(MaDT)){
+          res.status(404).json({
+              result:"Failed",
+              reason: `DoiTac not found with MaDT: ${MaDT}`
+          });
+          return;
+      }
+      let pool = await sql.connect(config);
+      const results = await pool.request().input('1',sql.VarChar(8),MaDT).query(queries.getThuCDonByMaDT);
+      res.status(200).json(results.recordsets);
+  } catch (error) {
+      throw error;
+  }
+}
+
 export default {
   getDoiTac,
   getDoiTacByID,
@@ -186,4 +204,5 @@ export default {
   insertDoiTac,
   updateDoiTac,
   deleteDoiTac,
+  getThucDonByMaDT
 };

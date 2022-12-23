@@ -1,7 +1,7 @@
 const config = {
-  user: "dhlogin",
-  password: "seaways456",
-  server: "LAPTOP-TGVBBNN7",
+  user: "MANHCUONG",
+  password: "510234",
+  server: "DESKTOP-6QPN5OE",
   options: {
     port: 1433,
     encrypt: false,
