@@ -2,7 +2,12 @@ import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
 
-import { checkMaKHExists,checkMaDHExists,checkMaDTExists,check_TenMon_ThucDon } from "../CheckExists.js";
+import {
+  checkMaKHExists,
+  checkMaDHExists,
+  checkMaDTExists,
+  check_TenMon_ThucDon,
+} from "../CheckExists.js";
 
 const getKhachHangByMaKH = async (req, res) => {
   try {
@@ -55,15 +60,9 @@ const insertKhachHang = async (req, res) => {
   }
 };
 
-const DatHang = async(req,res) => {
+const DatHang = async (req, res) => {
   try {
-    const {
-      MaKH,
-      DiaChiDH,
-      MaDT,
-      TenMon1,
-      TenMon2,
-    } = JSON.parse(req.body);
+    const { MaKH, DiaChiDH, MaDT, TenMon1 } = JSON.parse(req.body);
 
     if (!(await checkMaDTExists(MaDT))) {
       res.status(404).json({
@@ -72,8 +71,7 @@ const DatHang = async(req,res) => {
       });
       return;
     }
-    if(! await checkMaKHExists(MaKH) )
-    {
+    if (!(await checkMaKHExists(MaKH))) {
       res.status(404).json({
         result: "that bai",
         message: `Doi Tac ${MaDT} khong co mon an ${TenMon1}`,
@@ -81,33 +79,26 @@ const DatHang = async(req,res) => {
       return;
     }
 
-    if(! await check_TenMon_ThucDon(TenMon1,MaDT))
-    {
+    if (!(await check_TenMon_ThucDon(TenMon1, MaDT))) {
       res.status(404).json({
         result: "that bai",
         message: `Doi Tac ${MaDT} khong co mon an ${TenMon1}`,
       });
       return;
     }
-    if(! await check_TenMon_ThucDon(TenMon2,MaDT))
-    {
-      res.status(404).json({
-        result: "that bai",
-        message: `Doi Tac ${MaDT} khong co mon an ${TenMon2}`,
-      });
-      return;
-    }
 
-    const MaDH1 = 'DH'+(String)(Math.floor(Math.random() * (99999-10000)) + 10000);
+    const MaDH1 =
+      "DH" + String(Math.floor(Math.random() * (99999 - 10000)) + 10000);
 
     const TongTienCacMon = 0;
-    const TrangThaDH = 'Dang len don hang';
+    const TrangThaDH = "Dang len don hang";
     const TongTienDH = 0;
 
     var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var time =
+      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     const ThoiGianDatHang = time;
-    const MaTX = "NULL"
+    const MaTX = "NULL";
     const pool = await sql.connect(config);
     await pool
       .request()
@@ -136,18 +127,18 @@ const DatHang = async(req,res) => {
         MaDT: MaDT,
       },
     });
-    await pool.request().input('1',sql.VarChar(8),MaDH1).input('2',sql.NVarChar(30),TenMon1)
-    .query("insert into DonHang_MonAn(MaDH,TenMon) values(@1,@2)");
-    await pool.request().input('1',sql.VarChar(8),MaDH1).input('2',sql.NVarChar(30),TenMon2)
-    .query("insert into DonHang_MonAn(MaDH,TenMon) values(@1,@2)");
-    
+    await pool
+      .request()
+      .input("1", sql.VarChar(8), MaDH1)
+      .input("2", sql.NVarChar(30), TenMon1)
+      .query("insert into DonHang_MonAn(MaDH,TenMon) values(@1,@2)");
   } catch (error) {
     throw error;
   }
-}
+};
 
 export default {
   getKhachHangByMaKH,
   insertKhachHang,
-  DatHang
+  DatHang,
 };
