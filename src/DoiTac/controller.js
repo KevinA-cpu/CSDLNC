@@ -199,7 +199,7 @@ const getThucDonByMaDT = async(req,res) => {
 
 const NhanDonHang= async(res,req) => {
   try {
-    const {MaDH,MaDT} = JSON.parse(req.body);
+    let {MaDH,MaDT} = JSON.parse(req.body);
     if(! await checkMaDHExists(MaDH))
     {
       res.status(404).json({

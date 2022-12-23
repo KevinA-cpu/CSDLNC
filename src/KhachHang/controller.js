@@ -58,6 +58,7 @@ const insertKhachHang = async (req, res) => {
 const DatHang = async(req,res) => {
   try {
     const {
+      MaKH,
       DiaChiDH,
       MaDT,
       TenMon1,
@@ -71,8 +72,7 @@ const DatHang = async(req,res) => {
       });
       return;
     }
-
-    if(! check_TenMon_ThucDon(TenMon1,MaDT))
+    if(! await checkMaKHExists(MaKH) )
     {
       res.status(404).json({
         result: "that bai",
@@ -80,7 +80,16 @@ const DatHang = async(req,res) => {
       });
       return;
     }
-    if(! check_TenMon_ThucDon(TenMon2,MaDT))
+
+    if(! await check_TenMon_ThucDon(TenMon1,MaDT))
+    {
+      res.status(404).json({
+        result: "that bai",
+        message: `Doi Tac ${MaDT} khong co mon an ${TenMon1}`,
+      });
+      return;
+    }
+    if(! await check_TenMon_ThucDon(TenMon2,MaDT))
     {
       res.status(404).json({
         result: "that bai",
@@ -89,9 +98,7 @@ const DatHang = async(req,res) => {
       return;
     }
 
-    const MaKH = 'MKH'+(String)(Math.floor(Math.random() * (99999-10000)) + 10000);
-
-    const MaDH = 'DH'+(String)(Math.floor(Math.random() * (99999-10000)) + 10000);
+    const MaDH1 = 'DH'+(String)(Math.floor(Math.random() * (99999-10000)) + 10000);
 
     const TongTienCacMon = 0;
     const TrangThaDH = 'Dang len don hang';
@@ -101,11 +108,10 @@ const DatHang = async(req,res) => {
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     const ThoiGianDatHang = time;
     const MaTX = "NULL"
-    console.log(MaDH,TongTienCacMon,TrangThaDH,DiaChiDH,ThoiGianDatHang,TongTienDH,MaKH,MaTX,MaDT)
     const pool = await sql.connect(config);
     await pool
       .request()
-      .input("1", sql.VarChar(8), MaDH)
+      .input("1", sql.VarChar(8), MaDH1)
       .input("2", sql.Money, TongTienCacMon)
       .input("3", sql.NVarChar(25), TrangThaDH)
       .input("4", sql.NVarChar(100), DiaChiDH)
@@ -119,7 +125,7 @@ const DatHang = async(req,res) => {
       result: "thanh cong",
       message: "da them don hang vao DonDatHang",
       data: {
-        MaDH: MaDH,
+        MaDH: MaDH1,
         TongTienCacMon: TongTienCacMon,
         TrangThaDH: TrangThaDH,
         DiaChiDH: DiaChiDH,
@@ -130,6 +136,11 @@ const DatHang = async(req,res) => {
         MaDT: MaDT,
       },
     });
+    await pool.request().input('1',sql.VarChar(8),MaDH1).input('2',sql.NVarChar(30),TenMon1)
+    .query("insert into DonHang_MonAn(MaDH,TenMon) values(@1,@2)");
+    await pool.request().input('1',sql.VarChar(8),MaDH1).input('2',sql.NVarChar(30),TenMon2)
+    .query("insert into DonHang_MonAn(MaDH,TenMon) values(@1,@2)");
+    
   } catch (error) {
     throw error;
   }
