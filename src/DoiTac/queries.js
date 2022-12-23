@@ -1,4 +1,4 @@
-const getDoiTac = "SELECT * FROM DoiTac;";
+const getDoiTac = "SELECT TOP 20 * FROM DoiTac;";
 const getDoiTacWithMaDT = "SELECT * FROM DoiTac WHERE MaDT = @1;";
 const getAvailableDoiTac =
   "SELECT TOP 20 * FROM DoiTac dt WHERE dt.MaDT IN (SELECT hto.MaDT FROM HeThongOnline hto WHERE hto.MaDT = dt.MaDT AND hto.TrangThaiHoatDong = N'Đang hoạt động')";
