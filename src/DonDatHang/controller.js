@@ -1,7 +1,11 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import {checkMaDHExists,checkMaDTExists,checkMaKHExists} from "../CheckExists.js";
+import {
+  checkMaDHExists,
+  checkMaDTExists,
+  checkMaKHExists,
+} from "../CheckExists.js";
 
 const getDonDatHang = async (req, res) => {
   try {
@@ -115,9 +119,20 @@ const deleteDonDatHang = async (req, res) => {
   }
 };
 
+const getDonDatHangForTaiXe = async (req, res) => {
+  try {
+    const pool = await sql.connect(config);
+    const results = await pool.request().query(queries.getDonDatHangForTaiXe);
+    res.status(200).json(results.recordset);
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   getDonDatHang,
   getDonDatHangByMaDH,
   insertDonDatHang,
   deleteDonDatHang,
+  getDonDatHangForTaiXe,
 };

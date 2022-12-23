@@ -7,6 +7,8 @@ router.get("/", controller.getDonDatHang);
 
 router.get("/MaDH", controller.getDonDatHangByMaDH);
 
+router.get("/getDonDatHangForTaiXe", controller.getDonDatHangForTaiXe);
+
 router.post("/", controller.insertDonDatHang);
 
 router.delete("/MaDH", controller.deleteDonDatHang);
