@@ -7,6 +7,9 @@ const insertDoiTac =
 const updateDoiTac = "UPDATE DoiTac SET TenQuan = @1 WHERE MaDT = @2;";
 const deleteDoiTac = "DELETE FROM DoiTac WHERE MaDT = @1;";
 
+const getThuCDonByMaDT = 
+"select td.TenMon,ma.DonGia,ma.TinhTrangMon,ma.SoLuongDaBan,ma.SoLike,ma.SoDislike from ThucDon td,MonAn ma where td.MaDT = @1 and ma.TenMon = td.TenMon";
+
 export default {
   getDoiTac,
   getDoiTacWithMaDT,
@@ -14,4 +17,5 @@ export default {
   insertDoiTac,
   updateDoiTac,
   deleteDoiTac,
+  getThuCDonByMaDT
 };
