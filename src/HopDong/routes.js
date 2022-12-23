@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/",controller.getHopDong);
 
-router.get("/MaHD",controller.getHopDongByID);
+router.post("/MaHD",controller.getHopDongByID);
 
 router.post("/",controller.insertHopDong);
 
