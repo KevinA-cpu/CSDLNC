@@ -19,7 +19,7 @@ const getDonDatHang = async (req, res) => {
 
 const getDonDatHangByMaDH = async (req, res) => {
   try {
-    const {MaDH} = JSON.parse(req.body);
+    const { MaDH } = JSON.parse(req.body);
     const pool = await sql.connect(config);
     const results = await pool
       .request()
@@ -129,10 +129,25 @@ const getDonDatHangForTaiXe = async (req, res) => {
   }
 };
 
+const getDonDatHangByMaKH = async (req, res) => {
+  try {
+    const MaKH = req.query.MaKH;
+    const pool = await sql.connect(config);
+    const results = await pool
+      .request()
+      .input("1", sql.VarChar(8), MaKH)
+      .query(queries.getDonDatHangByMaKH);
+    res.status(200).json(results.recordset);
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   getDonDatHang,
   getDonDatHangByMaDH,
   insertDonDatHang,
   deleteDonDatHang,
   getDonDatHangForTaiXe,
+  getDonDatHangByMaKH,
 };

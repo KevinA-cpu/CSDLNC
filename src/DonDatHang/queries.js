@@ -5,10 +5,12 @@ const insertDonDatHang =
 const deleteDonDatHang = "DELETE FROM DonDatHang WHERE MaDH = @1";
 const getDonDatHangForTaiXe =
   "SELECT TOP 20 * FROM DonDatHang WHERE MaTX IS NULL";
+const getDonDatHangByMaKH = "SELECT * FROM DonDatHang WHERE MaKH = @1";
 export default {
   getDonDatHang,
   getDonDatHangByMaDH,
   insertDonDatHang,
   deleteDonDatHang,
   getDonDatHangForTaiXe,
+  getDonDatHangByMaKH,
 };
