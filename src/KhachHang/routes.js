@@ -7,4 +7,6 @@ router.get("/MaKH", controller.getKhachHangByMaKH);
 
 router.post("/", controller.insertKhachHang);
 
+router.post("/dathang", controller.DatHang);
+
 export default router;

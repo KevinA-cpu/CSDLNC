@@ -1,7 +1,7 @@
 import config from "../../db.js";
 import queries from "./queries.js";
 import sql from "mssql";
-import {checkMaDTExists}  from "../CheckExists.js";
+import {checkMaDHExists, checkMaDTExists}  from "../CheckExists.js";
 
 const getDoiTac = async (req, res) => {
   try {
@@ -197,6 +197,51 @@ const getThucDonByMaDT = async(req,res) => {
   }
 }
 
+const NhanDonHang= async(res,req) => {
+  try {
+    const {MaDH,MaDT} = JSON.parse(req.body);
+    if(! await checkMaDHExists(MaDH))
+    {
+      res.status(404).json({
+        result:"Failed",
+        reason: `Don hang not found ${MaDH}`
+      });
+      return;
+    }
+    if(! await checkMaDTExists(MaDT))
+    {
+      res.status(404).json({
+        result:"Failed",
+        reason: `Doi tac not found ${MaDT}`
+      });
+      return;
+    }
+    let pool = await sql.connect(config);
+    await pool.request().input('1',sql.VarChar(8),MaDH).input('1',sql.VarChar(8),MaDT)
+    .query("update DonDatHang set TrangThaiDH = 'dang chuan bi' where MaDH = @1 and MaDT = @2");
+  } catch (error) {
+    throw error;
+  }
+}
+
+const ShowDonHang = async(req,res)=> {
+  try {
+    const {MaDT} = JSON.parse(req.body);
+    if(! await checkMaDTExists(MaDT)){
+      res.status(404).json({
+          result:"Failed",
+          reason: `DoiTac not found with MaDT: ${MaDT}`
+      });
+      return;
+    }
+    let pool = await sql.connect(config)
+    const result = await pool.request().input('1',sql.VarChar(8),MaDT).query("select * from DonDatHang where MaDT = @1 and TrangThaiDH = 'Dang len don hang'");
+    res.status(200).json(result.recordsets);
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getDoiTac,
   getDoiTacByID,
@@ -204,5 +249,7 @@ export default {
   insertDoiTac,
   updateDoiTac,
   deleteDoiTac,
-  getThucDonByMaDT
+  getThucDonByMaDT,
+  NhanDonHang,
+  ShowDonHang
 };

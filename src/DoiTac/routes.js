@@ -6,6 +6,8 @@ const router = Router();
 
 router.get("/", controller.getDoiTac);
 
+router.post("/XemDonHang",controller.ShowDonHang);
+
 router.post("/MaDT",controller.getDoiTacByID);
 
 router.post("/ThucDon",controller.getThucDonByMaDT)
@@ -17,6 +19,8 @@ router.get("/getAvailableDoiTac", controller.getAvailableDoiTac);
 router.post("/", controller.insertDoiTac);
 
 router.put("/", controller.updateDoiTac);
+
+router.put("/NhanDonHang", controller.NhanDonHang);
 
 router.delete("/", controller.deleteDoiTac);
 

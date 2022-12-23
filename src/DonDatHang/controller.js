@@ -15,7 +15,7 @@ const getDonDatHang = async (req, res) => {
 
 const getDonDatHangByMaDH = async (req, res) => {
   try {
-    const MaDH = req.query.MaDH;
+    const {MaDH} = JSON.parse(req.body);
     const pool = await sql.connect(config);
     const results = await pool
       .request()
