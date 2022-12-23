@@ -197,9 +197,9 @@ const getThucDonByMaDT = async(req,res) => {
   }
 }
 
-const NhanDonHang= async(res,req) => {
+const NhanDonHang= async(req,res) => {
   try {
-    let {MaDH,MaDT} = JSON.parse(req.body);
+    const {MaDH,MaDT} = JSON.parse(req.body);
     if(! await checkMaDHExists(MaDH))
     {
       res.status(404).json({
@@ -217,8 +217,9 @@ const NhanDonHang= async(res,req) => {
       return;
     }
     let pool = await sql.connect(config);
-    await pool.request().input('1',sql.VarChar(8),MaDH).input('1',sql.VarChar(8),MaDT)
+    await pool.request().input('1',sql.VarChar(8),MaDH).input('2',sql.VarChar(8),MaDT)
     .query("update DonDatHang set TrangThaiDH = 'dang chuan bi' where MaDH = @1 and MaDT = @2");
+    res.status(200).json({result: "Nhan Don hang thanh cong"})
   } catch (error) {
     throw error;
   }
