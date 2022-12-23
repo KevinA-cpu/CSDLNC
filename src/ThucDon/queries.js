@@ -1,4 +1,4 @@
-const getThucDon = "select * from ThucDon";
+const getThucDon = "select TOP 20 * from ThucDon";
 const getThuCDonByMaDT = 
 "select td.TenMon,ma.DonGia,ma.TinhTrangMon,ma.SoLuongDaBan,ma.SoLike,ma.SoDislike from ThucDon td,MonAn ma where td.MaDT = @1 and ma.TenMon = td.TenMon";
 const getDoiTacByID = "select * from DoiTac where MaDT = @1";
