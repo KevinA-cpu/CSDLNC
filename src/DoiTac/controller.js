@@ -236,7 +236,8 @@ const ShowDonHang = async(req,res)=> {
       return;
     }
     let pool = await sql.connect(config)
-    const result = await pool.request().input('1',sql.VarChar(8),MaDT).query("select * from DonDatHang where MaDT = @1 and TrangThaiDH = 'Dang len don hang'");
+    const result = await pool.request().input('1',sql.VarChar(8),MaDT).query("select * from DonDatHang where MaDT = @1");
+    // const result = await pool.request().input('1',sql.VarChar(8),MaDT).query("select * from DonDatHang where MaDT = @1 and TrangThaiDH = 'Dang len don hang' ");
     res.status(200).json(result.recordsets);
   } catch (error) {
     throw error;
