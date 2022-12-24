@@ -5,13 +5,12 @@ const chooseDonDatHang =
 const undoDonDatHang =
   "UPDATE DonDatHang SET MaTX = NULL, TrangThaiDH = NULL WHERE MaDH = @1 AND MaTX = @2";
 const insertTaiXe = "INSERT INTO TaiXe VALUES(@1,@2,@3,@4,@5,@6,@7,@8,@9,@10)";
-const getDonHang_MonAnForTaiXe =
-  "SELECT * FROM DonHang_MonAn WHERE MaDH = (SELECT MaDH FROM DonDatHang WHERE MaTX = @1)";
+const getDonDatHangOfTaiXe = "SELECT * FROM DonDatHang WHERE MaTX = @1";
 export default {
   getTaiXe,
   getTaiXeWithMaTX,
   chooseDonDatHang,
   undoDonDatHang,
   insertTaiXe,
-  getDonHang_MonAnForTaiXe,
+  getDonDatHangOfTaiXe,
 };

@@ -138,14 +138,14 @@ const insertTaiXe = async (req, res) => {
   }
 };
 
-const getDonHang_MonAnForTaiXe = async (req, res) => {
+const getDonDatHangOfTaiXe = async (req, res) => {
   try {
     const MaTX = req.query.MaTX;
     const pool = await sql.connect(config);
     const results = await pool
       .request()
       .input("1", sql.VarChar(8), MaTX)
-      .query(queries.getDonHang_MonAnForTaiXe);
+      .query(queries.getDonDatHangOfTaiXe);
     res.status(200).json(results.recordset);
   } catch (error) {
     throw error;
@@ -158,5 +158,5 @@ export default {
   chooseDonDatHang,
   undoDonDatHang,
   insertTaiXe,
-  getDonHang_MonAnForTaiXe,
+  getDonDatHangOfTaiXe,
 };

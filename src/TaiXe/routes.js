@@ -7,7 +7,7 @@ router.get("/", controller.getTaiXe);
 
 router.get("/MaTX", controller.getTaiXeWithMaTX);
 
-router.get("/DonHang_MonAnForTaiXe", controller.getDonHang_MonAnForTaiXe);
+router.get("/getDonDatHangOfTaiXe", controller.getDonDatHangOfTaiXe);
 
 router.put("/chooseDonDatHang", controller.chooseDonDatHang);
 
